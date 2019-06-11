@@ -1,0 +1,59 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+  <title>Home | Bookshop Responsive Bootstrap4 Template</title>
+	<meta name="description" content="">
+	<% include layout/head.ejs %>
+</head>
+<body>
+	<!--[if lte IE 9]>
+		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+	<![endif]-->
+
+	<!-- Main wrapper -->
+	<div class="wrapper" id="wrapper">
+      <% include layout/header.ejs %>
+                <!-- Start Bradcaump area -->
+                <div class="ht__bradcaump__area bg-image--4">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="bradcaump__inner text-center">
+                                        <h2 class="bradcaump-title">Shop Single</h2>
+                                        <nav class="bradcaump-content">
+                                          <a class="breadcrumb_item" href="index.html">Home</a>
+                                          <span class="brd-separetor">/</span>
+                                          <span class="breadcrumb_item active">Shop Single</span>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+  
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      
+    </div>
+    <div class="col-sm-4">
+        <form action="/profile-update" method="POST">
+            <input type="hidden" class="_id" name="_id" value="<%= User._id %>">
+            Username : <input type="text" class="username" name="username" value="<%= User.username %>"> <br>
+            Email : <input type="email" class="email" name="email" value="<%= User.email %>">  <br>
+            Gender : <input type="gender" class="gender" name="gender" value="<%= User.gender %>">  <br>
+            Country : <input type="country" class="country" name="country" value="<%= User.country %>">  <br>
+            Phone :  <input type="phone" class="phone" name="phone" value="<%= User.phone %>"> <br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div class="col-sm-4">
+      
+    </div>
+  </div>
+</div>
+<% include layout/footer.ejs %>
+
+	
+</body>
+</html>

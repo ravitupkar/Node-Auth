@@ -1,0 +1,56 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+<head>
+  <title>Home | Bookshop Responsive Bootstrap4 Template</title>
+	<meta name="description" content="">
+	<% include layout/head.ejs %>
+</head>
+<body>
+	<!--[if lte IE 9]>
+		<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+	<![endif]-->
+
+	<!-- Main wrapper -->
+	<div class="wrapper" id="wrapper">
+      <% include layout/header.ejs %>
+                <!-- Start Bradcaump area -->
+                <div class="ht__bradcaump__area bg-image--4">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="bradcaump__inner text-center">
+                                        <h2 class="bradcaump-title">Shop Single</h2>
+                                        <nav class="bradcaump-content">
+                                          <a class="breadcrumb_item" href="index.html">Home</a>
+                                          <span class="brd-separetor">/</span>
+                                          <span class="breadcrumb_item active">Shop Single</span>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+  
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      
+    </div>
+    <div class="col-sm-4">
+      <p>Username : <%= User.username %></p>
+      <p>Email : <%= User.email %></p>
+      <p>Gender : <%= User.gender %></p>
+      <p>Country : <%= User.country %></p>
+      <p>Phone : <%= User.phone %></p>
+      <a href="/profile-edit">Edit</a>
+    </div>
+    <div class="col-sm-4">
+      
+    </div>
+  </div>
+</div>
+<% include layout/footer.ejs %>
+
+	
+</body>
+</html>

@@ -7,8 +7,49 @@ mongoose.connect(uri,  { useNewUrlParser: true }, function (err) {
 
 const User  = require('../model/userModel'); // import user model 
 
+
+module.exports.redirectToLogin = (req, res, next) =>{
+    if(!req.session.UserId){
+        res.redirect('/login');
+    }else{
+        next();
+    }
+}
+
+module.exports.isLogin = (req, res, next) =>{
+    if(!req.session.UserId){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+module.exports.redirectToDashbodrd = (req, res, next) =>{
+    if(req.session.UserId){
+        res.redirect('/dashboard');
+    }else{
+        next();
+    }
+}
+
+module.exports.getUser = (req, res, next) =>{
+    // const { UserId } = req.session; 
+    // if(UserId){
+    //      res.locals.user = User.find(
+    //         user => user._id === UserId
+    //     );
+    // }
+
+        next();
+    
+}
+
+
 module.exports.register = (req, res, next) => {
-    res.render('register.ejs',{
+    let { UserId, Username } = req.session;
+    res.render('register.ejs', {
+        UserId: UserId,
+        Username: Username,
         errorMessage : ''
     });
 }
@@ -28,7 +69,7 @@ module.exports.userRegister = (req, res, next) => {
     });
 
     // console.log(userRegiter);
-    userRegiter.save((err , result) => {
+    userRegiter.save((err , user) => {
         if(err){
             console.log(err.message);
             res.render('register.ejs',{
@@ -36,6 +77,8 @@ module.exports.userRegister = (req, res, next) => {
             });
         }else{
             console.log("saved sucssefully");
+            req.session.UserId = user._id;
+            req.session.Username = user.username;
             res.redirect('/login');
         }
 
@@ -44,8 +87,11 @@ module.exports.userRegister = (req, res, next) => {
 
 // login page
 module.exports.login = (req, res, next) => {
-    console.log(req.session);
-    res.render('login.ejs');
+    let { UserId, Username } = req.session;
+    res.render('login.ejs', {
+        UserId: UserId,
+        Username: Username,
+    });;
 }
 
 // do login
@@ -55,13 +101,11 @@ module.exports.doLogin = (req, res, next) => {
         if(err){
             throw err;
         }else{
-            console.log(user);
-            req.session.userId = user._id;
-            req.session.username = user.username;
-            req.session.email = user.email;
-            // console.log(req.session.userId);
-            // console.log(username);
-            console.log(req.session);
+            // console.log(user);
+            req.session.UserId = user._id;
+            req.session.Username = user.username;
+            // console.log(req.session);
+            // console.log('dashboard');
             res.redirect('/dashboard');
         }
     });
@@ -78,13 +122,152 @@ module.exports.logout = (req, res, next) => {
 }
 
 module.exports.dashboard = (req, res, next) => {
-    console.log(req.session);
+    let { UserId, Username } = req.session;
+    // console.log(UserId);
+    // console.log(Username);
     res.render('dashboard.ejs', {
-        username: req.session.username
+        UserId: UserId,
+        Username: Username,
     });
 }
 
-module.exports.home = (req, res, next) => {
-    res.render('index.ejs');
+module.exports.profile = (req, res, next) => {
+    let { UserId, Username } = req.session;
+    // let { user } = res.locals;
+    User.findOne({ _id : UserId}, function (err, user) {
+        if(err){
+
+        }else{
+            // console.log(user);
+            res.render('profile.ejs', {
+                UserId: UserId,
+                Username: Username,
+                User : user
+            });
+        }
+
+    });
+    
+    // console.log(Username);
+    
 }
+
+module.exports.profile = (req, res, next) => {
+    let { UserId, Username } = req.session;
+    // let { user } = res.locals;
+    User.findOne({ _id : UserId}, function (err, user) {
+        if(err){
+
+        }else{
+            // console.log(user);
+            res.render('profile.ejs', {
+                UserId: UserId,
+                Username: Username,
+                User : user
+            });
+        }
+
+    });
+    
+    // console.log(Username);
+    
+}
+
+
+module.exports.profileEdit = (req, res, next) => {
+    let { UserId, Username } = req.session;
+    // let { user } = res.locals;
+    User.findOne({ _id : UserId}, function (err, user) {
+        if(err){
+
+        }else{
+            // console.log(user);
+            res.render('profile-edit.ejs', {
+                UserId: UserId,
+                Username: Username,
+                User : user
+            });
+        }
+
+    });
+    
+    // console.log(Username);
+    
+}
+
+module.exports.profileUpdate = (req, res, next) => {
+    let { UserId, Username } = req.session;
+    // console.log(req.body);
+    let { user } = res.locals;
+    User.findOneAndUpdate({ _id : UserId}, 
+        { $set: 
+            { 
+                username: req.body.username,
+                email: req.body.email,
+                phone: req.body.phone,
+                gender: req.body.gender,
+                country: req.body.country
+            }
+        }, function (err, user) {
+        if(err){
+
+        }else{
+            console.log("user update successfully");
+            res.redirect('/profile');
+        }
+
+    });
+    
+}
+
+module.exports.changePassword = (req, res, next) => {
+    let { UserId, Username } = req.session;
+    // console.log(UserId);
+    // console.log(Username);
+    res.render('change-password.ejs', {
+        UserId: UserId,
+        Username: Username,
+    });
+}
+
+module.exports.updatePassword = (req, res, next) => {
+    let { UserId, Username } = req.session;
+    // console.log(req.body);
+    // console.log(UserId);
+    // console.log(Username);
+    User.findOneAndUpdate({ _id : UserId,  password : req.body.old_password}, 
+        { $set: 
+            { 
+                password : req.body.password
+            }
+        }, function (err, user) {
+        if(err){
+
+        }else{
+            console.log("Password update successfully");
+            res.redirect('/profile');
+        }
+
+    });
+}
+
+
+module.exports.saveImage = (req, res, next) => {
+    res.render('file-upload.ejs');
+}
+
+module.exports.home = (req, res, next) => {
+    let { UserId, Username } = req.session;
+    // console.log(UserId);
+    // console.log(Username);
+    res.render('index.ejs', {
+        UserId: UserId,
+        Username: Username,
+    });
+}
+
+
+
+
+
 
