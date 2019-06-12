@@ -1,10 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
+var nodemailer = require('nodemailer');
 const uri = "mongodb+srv://ravitupkar01:ravitupkar01@cluster0ravi-flkid.mongodb.net/shop?retryWrites=true";
 mongoose.connect(uri,  { useNewUrlParser: true }, function (err) {
     if (err) throw err;
 //    console.log('Successfully connected');
 });
+
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'ravitupkar02@gmail.com',
+    pass: 'rv8983411542'
+  }
+});
+
+
 
 const Product  = require('../model/poductModel'); // import user model 
 
@@ -25,7 +38,7 @@ productRouter.use(AuthController.getUser);
 productRouter.use('/user-home', AuthController.redirectToLogin, ProductController.allProduct);   // dashboard page view
 
 productRouter.use('/product-details/:id', AuthController.redirectToLogin, ProductController.productDetails);   // dashboard page view
-
+productRouter.use('/product-share/:id', AuthController.redirectToLogin, ProductController.productShare);  
 productRouter.get('/add-product', AuthController.redirectToLogin, ProductController.addProduct);   // dashboard page view
 
 productRouter.post('/save-product', upload.single('product_picture'), ProductController.saveProduct);   // dashboard page view
@@ -40,6 +53,43 @@ productRouter.get('/product-delete/:id', AuthController.redirectToLogin, Product
 
 productRouter.post('/product-update', upload.single('product_picture'), ProductController.productUpdate);   // dashboard page view
 
+productRouter.post('/share-email',(req, res) =>{
+
+  var SubjectData = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+  <div class="container">
+  `+req.body.subject+`
+  <span class="pull-right">
+  <i id="dislike2" class="glyphicon glyphicon-thumbs-down"><img src="https://www.sccpre.cat/mypng/full/14-141104_like-thumb-up-vote-comments-campanita-de-notificaciones.png" width="100"></i> 
+<i id="like2" class="glyphicon glyphicon-thumbs-up"><img src="https://banner2.kisspng.com/20180702/cpg/kisspng-thumb-signal-gesture-finger-clip-art-thumbs-down-5b39a5d55c3126.7225102615305046613776.jpg" width="100"></i> 
+                    </span>
+  </div>
+  </body>
+  </html>`;
+   var mailOptions = {
+    from: 'ravitupkar02@gmail.com',
+    to: req.body.hiddenEmail,
+    subject: 'rate this',
+    html: SubjectData
+  };
+  console.log(mailOptions);
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+});
 
 productRouter.post('/testAjax',(req, res) =>{
     // console.log(req.body.data);

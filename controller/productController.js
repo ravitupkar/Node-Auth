@@ -63,7 +63,7 @@ module.exports.productedit = (req, res, next) => {
         }
     });
 }
-
+// 
 module.exports.productDetails = (req, res, next) => {
     let { UserId, Username } = req.session;
     console.log(req.params.id);
@@ -75,6 +75,30 @@ module.exports.productDetails = (req, res, next) => {
         }else{
             console.log(product);
             res.render('product-details.ejs', {
+                UserId: UserId,
+                Username: Username,
+                product : product
+
+            });
+        }
+    });
+    // res.render('product-details.ejs', {
+    //     UserId: UserId,
+    //     Username: Username
+    // }); 
+}
+
+module.exports.productShare = (req, res, next) => {
+    let { UserId, Username } = req.session;
+    console.log(req.params.id);
+    console.log(req.session);
+    ProductID =  req.params.id;
+    Product.findOne({_id : ProductID}, function (err, product) {
+        if(err){
+            throw err;
+        }else{
+            console.log(product);
+            res.render('product-share.ejs', {
                 UserId: UserId,
                 Username: Username,
                 product : product
